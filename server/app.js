@@ -37,7 +37,11 @@ var server = app.listen(3000,()=>{
 var io = socketio.listen(server)
 
 io.on('connection',function(socket) {
-    console.log(`Connection : SocketId = ${socket.id}`)   
+
+    //The moment one of your client connected to socket.io server it will obtain socket id
+    //Let's print this out.
+    console.log(`Connection : SocketId = ${socket.id}`)
+    //Since we are going to use userName through whole socket connection, Let's make it global.   
     var userName = '';
     
     socket.on('subscribe', function(data) {
