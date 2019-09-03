@@ -48,22 +48,21 @@ io.on('connection',function(socket) {
         console.log('subscribe trigged')
         const room_data = JSON.parse(data)
         userName = room_data.userName;
-        const roomNumber = room_data.roomNumber;
+        const roomName = room_data.roomName;
+    
+        socket.join(`${roomName}`)
+        console.log(`Username : ${userName} joined Room Name : ${roomName}`)
         
-        socket.join(`${roomNumber}`)
-        console.log(`Username : ${userName} joined Room Number : ${roomNumber}`)
-        
+       
         // Let the other user get notification that user got into the room;
         // It can be use to indicate that person has read the messages. (Like turns "unread" into "read")
-        
-        var sendData = {
-            userName : userName
-        }
-        
+
         //TODO: need to chose
         //io.to : User who has joined can get a event;
         //socket.broadcast.to : all the users except the user who has joined will get the message
-        socket.broadcast.to(`${roomNumber}`).emit('newUserToChatRoom',userName);
+        // socket.broadcast.to(`${roomName}`).emit('newUserToChatRoom',userName);
+        io.to(`${roomName}`).emit('newUserToChatRoom',userName);
+
     })
 
     socket.on('undescribe',function(data) {
