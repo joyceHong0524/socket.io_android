@@ -65,15 +65,15 @@ io.on('connection',function(socket) {
 
     })
 
-    socket.on('undescribe',function(data) {
-        console.log('undescribe trigged')
+    socket.on('unsubscribe',function(data) {
+        console.log('unsubscribe trigged')
         const room_data = JSON.parse(data)
         const userName = room_data.userName;
-        const roomNumber = room_data.roomNumber;
-        
-        socket.leave(`${roomNumber}`)
-        console.log(`Username : ${userName} leaved Room Number : ${roomNumber}`)
-
+        const roomName = room_data.roomName;
+    
+        console.log(`Username : ${userName} leaved Room Name : ${roomName}`)
+        socket.broadcast.to(`${roomName}`).emit('userLeftChatRoom',userName)
+        socket.leave(`${roomName}`)
     })
 
     socket.on('newMessage',function(data) {
@@ -81,29 +81,32 @@ io.on('connection',function(socket) {
 
         const messageData = JSON.parse(data)
         const messageContent = messageData.messageContent
-        const roomNumber = messageData.roomNumber
+        const roomName = messageData.roomName
 
-        console.log(`[Room Number ${roomNumber}] ${userName} : ${messageContent}`)
+        console.log(`[Room Number ${roomName}] ${userName} : ${messageContent}`)
         // Just pass the data that has been passed from the writer socket
 
         const chatData = {
             userName : userName,
             messageContent : messageContent,
-            roomNumber : roomNumber
+            roomName : roomName
         }
-        socket.broadcast.to(`${roomNumber}`).emit('updateChat',JSON.stringify(chatData)) // Need to be parsed into Kotlin object in Kotlin
+        socket.broadcast.to(`${roomName}`).emit('updateChat',JSON.stringify(chatData)) // Need to be parsed into Kotlin object in Kotlin
     })
 
-    socket.on('typing',function(roomNumber){ //Only roomNumber is needed here
-        console.log('typing triggered')
-        socket.broadcast.to(`${roomNumber}`).emit('typing')
-    })
+    // socket.on('typing',function(roomNumber){ //Only roomNumber is needed here
+    //     console.log('typing triggered')
+    //     socket.broadcast.to(`${roomNumber}`).emit('typing')
+    // })
 
-    socket.on('stopTyping',function(roomNumber){ //Only roomNumber is needed here
-        console.log('stopTyping triggered')
-        socket.broadcast.to(`${roomNumber}`).emit('stopTyping')
-    })
+    // socket.on('stopTyping',function(roomNumber){ //Only roomNumber is needed here
+    //     console.log('stopTyping triggered')
+    //     socket.broadcast.to(`${roomNumber}`).emit('stopTyping')
+    // })
 
+    socket.on('disconnect', function () {
+        console.log("One of sockets disconnected from our server.")
+    });
 })
 
 module.exports = server; //Exporting for test
