@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Socket.io_Android</string>
+
+    <string name="nameHint">Nick Name</string>
+    <string name="chatRoomHint">Name of the chat room</string>
+    <string name="start">S T A R T</string>
+    <string name="emptyMessage">Nickname and Room Name should be filled!</string>
+    <string name="send">Send message ....</string>
 </resources>
