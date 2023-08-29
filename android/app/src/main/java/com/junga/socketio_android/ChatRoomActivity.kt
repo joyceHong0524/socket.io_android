@@ -19,15 +19,15 @@ class ChatRoomActivity : AppCompatActivity(), View.OnClickListener {
     val TAG = ChatRoomActivity::class.java.simpleName
 
 
-    lateinit var mSocket: Socket;
-    lateinit var userName: String;
-    lateinit var roomName: String;
+    lateinit var mSocket: Socket
+    lateinit var userName: String
+    lateinit var roomName: String
 
 
     val gson: Gson = Gson()
 
     //For setting the recyclerView.
-    val chatList: ArrayList<Message> = arrayListOf();
+    val chatList: ArrayList<Message> = arrayListOf()
     lateinit var chatRoomAdapter: ChatRoomAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,8 +49,8 @@ class ChatRoomActivity : AppCompatActivity(), View.OnClickListener {
 
         //Set Chatroom adapter
 
-        chatRoomAdapter = ChatRoomAdapter(this, chatList);
-        recyclerView.adapter = chatRoomAdapter;
+        chatRoomAdapter = ChatRoomAdapter(this, chatList)
+        recyclerView.adapter = chatRoomAdapter
 
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
@@ -131,10 +131,12 @@ class ChatRoomActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        val data = initialData(userName, roomName)
-        val jsonData = gson.toJson(data)
-        mSocket.emit("unsubscribe", jsonData)
-        mSocket.disconnect()
+        if (::userName.isInitialized && ::roomName.isInitialized) {
+            val data = initialData(userName, roomName)
+            val jsonData = gson.toJson(data)
+            mSocket.emit("unsubscribe", jsonData)
+            mSocket.disconnect()
+        }
     }
 
 }
